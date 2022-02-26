@@ -30,17 +30,17 @@ def matrizM(P):
     #^ Matriz que contem todas as combinações em ordem lexicográfica   
 
   #Etapa 2) Processo de ordenamento das alternativas em ordem crescente e coletando e ordenando seus índices 
-  P_aumentado = np.pad(P, ((0,0),(0,1)), 'constant', constant_values=0) #Aumenta a matriz de decisão e acrescenta uma coluna de zeros
-  P_new = np.sort(P_aumentado) #Ordenamento da matriz aumentada
-  P_indice = np.argsort(P) + 1  #Mantendo os índices da ordenação acrescidos de 1 para dar match com a matris S
+  P_aumentado = np.pad(P, ((0,0),(0,1)), 'constant', constant_values=0)
+  P_new = np.sort(P_aumentado)
+  P_indice = np.argsort(P) + 1  
 
-  M_t = np.zeros((len(P), 2**n)) #Matriz de zeros para ser substituida pelos valores de  P_new
+  M_t = np.zeros((len(P), 2**n)) 
 
   #Etapa 3) Cálculo da Integral de Choquet
-  for i in range(0,len(P)): #Roda para todas as linhas (alternativas)
-    for j in range(1, n+1): #Interaçoes que acontecem nas colunas
-      P_indice_aux = np.pad(np.sort(P_indice[i][j-1:n]), ((0,j-1)), 'constant', constant_values=0)  #Obtendo p/ cada interação os índices ordenados acrescidos de zeros
-      M_t[i][np.flatnonzero(np.all(S== P_indice_aux, 1))] = P_new[i][j] - P_new[i][j-1] #Substituindo onde da Match entre S e P_indice_aux na matrix M os valores de P_new
+  for i in range(0,len(P)): 
+    for j in range(1, n+1): 
+      P_indice_aux = np.pad(np.sort(P_indice[i][j-1:n]), ((0,j-1)), 'constant', constant_values=0)
+      M_t[i][np.flatnonzero(np.all(S== P_indice_aux, 1))] = P_new[i][j] - P_new[i][j-1] 
 
   M_t  #Matriz de interesse transposta
   return M_t
@@ -49,22 +49,22 @@ def matrizM(P):
 
 #Gerando dados aleatórios:
 
-#n_alter = 1000
-#n_crit = 4
-#tamanho = n_alter*n_crit
-#P = np.random.randint(0,100,size=tamanho).reshape(n_alter,n_crit)/100 #Matriz de decisão 
+n_alter = 1000
+n_crit = 4
+tamanho = n_alter*n_crit
+P = np.random.randint(0,100,size=tamanho).reshape(n_alter,n_crit)/100 #Matriz de decisão 
 
-#n = len(P[0]) #Número de critérios
-#capacidade = np.sort(np.random.uniform(0,100,size=2**n)/100) #Estratégia para gerar medidas que respeitam a monoticidade.
-#capacidade = np.random.uniform(0,100,size=2**n)/100 #Capacidades que não respeitam a monotocidade para testar se o solver esta funcioando corretamente.
-#capacidade[0] = 0
-#capacidade[2**n -1] = 1
+n = len(P[0]) #Número de critérios
+capacidade = np.sort(np.random.uniform(0,100,size=2**n)/100) #Estratégia para gerar medidas que respeitam a monoticidade.
+capacidade = np.random.uniform(0,100,size=2**n)/100 #Capacidades que não respeitam a monotocidade para testar se o solver esta funcioando corretamente.
+capacidade[0] = 0
+capacidade[2**n -1] = 1
 
-#M_t = matrizM(P)
-#utilidade = np.dot(M_t, capacidade) #Valor da Integral de Choquet.
+M_t = matrizM(P)
+utilidade = np.dot(M_t, capacidade) #Valor da Integral de Choquet.
 
-#e = np.random.normal(0, 0.1, n_alter) #Adicionando Ruído 
-#utilidade = np.dot(M_t, capacidade) + e #Valor da Integral de Choquet com ruído.
+e = np.random.normal(0, 0.1, n_alter) #Adicionando Ruído 
+utilidade = np.dot(M_t, capacidade) + e #Valor da Integral de Choquet com ruído.
 
 #print(P)
 #print(capacidade)
@@ -96,7 +96,7 @@ s[n*(2**(n-1)-1)+2] = 1
 s_t = s.transpose()
 
 #iv) Contruindo a matriz R
-R_oficial = np.zeros((n*(2**(n-1)-1), 2**n)) #Matriz das restrições inicialmente zerada.
+R_oficial = np.zeros((n*(2**(n-1)-1), 2**n)) 
 p = np.arange(1,n+1)
 S = np.concatenate([np.pad(np.array(list(itertools.combinations(p, r))), ((0,0),(0,n-r)), 'constant', constant_values=0) for r in range(0,n+1)], axis=0) #Matriz das combinações em ordem lexicográfica que serve de base para construir a matriz R.
 
@@ -242,6 +242,7 @@ T = np.zeros((2**n,2**n))
 for i in range(0, 2**n):
   for j in range(0, 2**n):
     T[i][j] = Brq[q[i][j]][r[j]]
+T #Matriz de Transformação pronta
 
 #print(Brq)
 #print(r) 
